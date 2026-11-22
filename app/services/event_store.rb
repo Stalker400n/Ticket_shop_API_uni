@@ -1,5 +1,5 @@
 class EventStore
-  FILE = Rails.root.join("db", events.json)
+  FILE = Rails.root.join("db", "events.json")
   LOCK = Mutex.new
 
   class Duplicate < StandardError; end
