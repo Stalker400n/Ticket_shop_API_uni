@@ -13,7 +13,7 @@ class Api::V1::EventsController < ApplicationController
     data["kodas"] ||= EventStore.next_code
     errors = SchemaValidator.check(data)
     return render(json: { errors: errors }, status: :bad_request) if errors.any?
-    render(json: EventStore.create(data), status :created)
+    render(json: EventStore.create(data), status: :created)
   rescue EventStore::Duplicate => e
     render(json: {error: e.message}, status: :conflict)
  end
