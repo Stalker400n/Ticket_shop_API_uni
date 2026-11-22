@@ -1,6 +1,6 @@
 class Api::V1::EventsController < ApplicationController
   def index
-    respond(EventStore.all)
+    render(json: EventStore.all)
   end
 
   def show
