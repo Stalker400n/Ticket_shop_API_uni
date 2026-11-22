@@ -4,7 +4,11 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def show
-    
+    if event = EventStore.find(params[:id])
+      render(json: event)
+    else
+      render(status: :not_found)
+    end
   end
 
   def create
