@@ -15,7 +15,7 @@ class Api::V1::EventsController < ApplicationController
     return render(json: { errors: errors }, status: :bad_request) if errors.any?
     render(json: EventStore.create(data), status :created)
   rescue EventStore::Duplicate => e
-    return(json: {error: e.message}, status: :conflict)
+    render(json: {error: e.message}, status: :conflict)
  end
 
   def update
