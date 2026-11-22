@@ -1,0 +1,77 @@
+{
+  "bilietai": [
+    {
+      "kodas": "REN-001",
+      "tipas": "koncertas",
+      "pavadinimas": "Kauno džiazo vakaras",
+      "data": "2026-11-20",
+      "trukme_minutemis": 120,
+      "aprasymas": "Vakaro metu pasirodys Kauno džiazo kvartetas, durys atsidaro 18:30, koncertas prasideda 19:30.",
+      "organizatorius": {
+        "pavadinimas": "Džiazo namai",
+        "telefonas": "+37060012345"
+      },
+      "vieta": {
+        "pavadinimas": "Žalgirio arena",
+        "miestas": "Kaunas",
+        "talpa": 15000,
+        "sektoriai": [
+          {
+            "kodas": "A",
+            "pavadinimas": "Parteris",
+            "bilieto_kaina": { "valiuta": "EUR", "suma": 65.00 },
+            "neigaliuju_vietos": [5, 6, 7],
+            "bilietai": [
+              { "busena": "parduotas", "eilute": 1, "vietos_numeris": 12, "pardavimo_data": "2026-10-01" },
+              {
+                "busena": "parduotas", "eilute": 1, "vietos_numeris": 13, "pardavimo_data": "2026-10-01",
+                "galutine_kaina": { "valiuta": "EUR", "suma": 58.50, "nuolaida": 10 }
+              },
+              { "busena": "laisvas", "eilute": 2, "vietos_numeris": 5 }
+            ]
+          },
+          {
+            "kodas": "B",
+            "pavadinimas": "Balkonas",
+            "bilieto_kaina": { "valiuta": "EUR", "suma": 39.90 },
+            "bilietai": [
+              { "busena": "rezervuotas", "eilute": 4, "vietos_numeris": 20, "pardavimo_data": "2026-10-05" },
+              { "busena": "laisvas", "eilute": 4, "vietos_numeris": 21 }
+            ]
+          }
+        ]
+      },
+      "akcijos": [
+        { "sektorius": "A", "pavadinimas": "Ankstyvo pirkimo nuolaida", "nuolaidos_procentas": 10 },
+        { "sektorius": "B", "pavadinimas": "Studentų savaitė", "nuolaidos_procentas": 25 }
+      ]
+    },
+    {
+      "kodas": "REN-002",
+      "tipas": "sportas",
+      "pavadinimas": "Krepšinio rungtynės: Žalgiris – Rytas",
+      "data": "2026-12-05",
+      "trukme_minutemis": 150,
+      "organizatorius": {
+        "pavadinimas": "Krepšinio lyga",
+        "el_pastas": "bilietai@krepsinis.lt"
+      },
+      "vieta": {
+        "pavadinimas": "Vilniaus Siemens arena",
+        "miestas": "Vilnius",
+        "talpa": 11000,
+        "sektoriai": [
+          {
+            "kodas": "C",
+            "pavadinimas": "Šalia aikštelės",
+            "bilieto_kaina": { "valiuta": "EUR", "suma": 45.50 },
+            "bilietai": [
+              { "busena": "parduotas", "eilute": 3, "vietos_numeris": 7, "pardavimo_data": "2026-10-07" },
+              { "busena": "laisvas", "eilute": 3, "vietos_numeris": 8 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

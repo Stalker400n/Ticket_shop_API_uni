@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "http://example.lt/bilietai/bilietai.schema.json",
+  "title": "Bilietų platinimo parduotuvė",
+  "description": "JSON Schema (draft-wright-json-schema-01, t. y. Draft 6) bilietai.json struktūrai aprašyti.",
+  "type": "object",
+  "required": ["bilietai"],
+  "additionalProperties": false,
+  "properties": {
+    "bilietai": {
+      "description": "Renginių sąrašas",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/renginys" }
+    }
+  },
+
+  "definitions": {
+
+    "tekstas": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+
+    "renginioKodas": {
+      "description": "Pvz. REN-001 (reguliari išraiška 1)",
+      "type": "string",
+      "pattern": "^REN-[0-9]{3}$"
+    },
+
+    "sektoriausKodas": {
+      "description": "Viena didžioji raidė (reguliari išraiška 2)",
+      "type": "string",
+      "pattern": "^[A-Z]$"
+    },
+
+    "data": {
+      "description": "Data YYYY-MM-DD (reguliari išraiška 3)",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+    },
+
+    "elPastas": {
+      "description": "(reguliari išraiška 4)",
+      "type": "string",
+      "pattern": "^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$"
+    },
+
+    "telefonas": {
+      "description": "(reguliari išraiška 5)",
+      "type": "string",
+      "pattern": "^\\+[0-9]{8,15}$"
+    },
+
+    "procentas": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+
+    "eilute": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 500
+    },
+
+    "vietosNumeris": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+
+    "renginioRusis": {
+      "type": "string",
+      "enum": ["koncertas", "sportas", "teatras", "festivalis"]
+    },
+
+    "busena": {
+      "type": "string",
+      "enum": ["laisvas", "rezervuotas", "parduotas"]
+    },
+
+    "kaina": {
+      "description": "Bazinė kaina: valiuta + suma",
+      "type": "object",
+      "required": ["valiuta", "suma"],
+      "properties": {
+        "valiuta": { "type": "string", "enum": ["EUR", "USD", "GBP"] },
+        "suma": { "type": "number", "minimum": 0, "maximum": 99999.99 }
+      }
+    },
+
+    "kainaEurais": {
+      "description": "Apribojimas allOf pagalba: bazinė kaina, bet tik EUR ir suma iki 10000 (kaip EurKainaTipas XSD)",
+      "allOf": [
+        { "$ref": "#/definitions/kaina" },
+        {
+          "properties": {
+            "valiuta": { "enum": ["EUR"] },
+            "suma": { "maximum": 10000 }
+          }
+        }
+      ]
+    },
+
+    "kainaSuNuolaida": {
+      "description": "Praplėtimas allOf pagalba: bazinė kaina + neprivalomas laukas nuolaida (kaip KainaSuNuolaidaTipas XSD)",
+      "allOf": [
+        { "$ref": "#/definitions/kaina" },
+        {
+          "properties": {
+            "nuolaida": { "$ref": "#/definitions/procentas" }
+          }
+        }
+      ]
+    },
+
+    "bilietoBaze": {
+      "description": "Visi galimi bilieto laukai; privalomi tik eilute, vietos_numeris, busena",
+      "type": "object",
+      "required": ["busena", "eilute", "vietos_numeris"],
+      "additionalProperties": false,
+      "properties": {
+        "busena": { "$ref": "#/definitions/busena" },
+        "eilute": { "$ref": "#/definitions/eilute" },
+        "vietos_numeris": { "$ref": "#/definitions/vietosNumeris" },
+        "pardavimo_data": { "$ref": "#/definitions/data" },
+        "galutine_kaina": { "$ref": "#/definitions/kainaSuNuolaida" }
+      }
+    },
+
+    "laisvasBilietas": {
+      "description": "Laisvas bilietas neturi pardavimo datos",
+      "properties": {
+        "busena": { "enum": ["laisvas"] }
+      },
+      "not": { "required": ["pardavimo_data"] }
+    },
+
+    "uzimtasBilietas": {
+      "description": "Rezervuotas arba parduotas bilietas privalo turėti pardavimo (rezervacijos) datą",
+      "required": ["pardavimo_data"],
+      "properties": {
+        "busena": { "enum": ["rezervuotas", "parduotas"] }
+      }
+    },
+
+    "bilietas": {
+      "description": "allOf: bendri laukai IR oneOf: tiksliai viena iš dviejų būsenos šakų",
+      "allOf": [
+        { "$ref": "#/definitions/bilietoBaze" },
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/laisvasBilietas" },
+            { "$ref": "#/definitions/uzimtasBilietas" }
+          ]
+        }
+      ]
+    },
+
+    "organizatorius": {
+      "description": "anyOf: privalomas bent vienas kontaktas (el. paštas arba telefonas)",
+      "type": "object",
+      "required": ["pavadinimas"],
+      "additionalProperties": false,
+      "properties": {
+        "pavadinimas": { "$ref": "#/definitions/tekstas" },
+        "el_pastas": { "$ref": "#/definitions/elPastas" },
+        "telefonas": { "$ref": "#/definitions/telefonas" }
+      },
+      "anyOf": [
+        { "required": ["el_pastas"] },
+        { "required": ["telefonas"] }
+      ]
+    },
+
+    "sektorius": {
+      "type": "object",
+      "required": ["kodas", "pavadinimas", "bilieto_kaina", "bilietai"],
+      "additionalProperties": false,
+      "properties": {
+        "kodas": { "$ref": "#/definitions/sektoriausKodas" },
+        "pavadinimas": { "$ref": "#/definitions/tekstas" },
+        "bilieto_kaina": { "$ref": "#/definitions/kainaEurais" },
+        "neigaliuju_vietos": {
+          "description": "Vietų numerių sąrašas (kaip XSD list tipas)",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/vietosNumeris" }
+        },
+        "bilietai": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/bilietas" }
+        }
+      }
+    },
+
+    "vieta": {
+      "type": "object",
+      "required": ["pavadinimas", "miestas", "talpa", "sektoriai"],
+      "additionalProperties": false,
+      "properties": {
+        "pavadinimas": { "$ref": "#/definitions/tekstas" },
+        "miestas": { "$ref": "#/definitions/tekstas" },
+        "talpa": { "type": "integer", "minimum": 1, "maximum": 200000 },
+        "sektoriai": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/sektorius" }
+        }
+      }
+    },
+
+    "akcija": {
+      "type": "object",
+      "required": ["sektorius", "pavadinimas", "nuolaidos_procentas"],
+      "additionalProperties": false,
+      "properties": {
+        "sektorius": { "$ref": "#/definitions/sektoriausKodas" },
+        "pavadinimas": { "$ref": "#/definitions/tekstas" },
+        "nuolaidos_procentas": { "$ref": "#/definitions/procentas" }
+      }
+    },
+
+    "renginys": {
+      "type": "object",
+      "required": ["kodas", "tipas", "pavadinimas", "data", "trukme_minutemis", "organizatorius", "vieta"],
+      "additionalProperties": false,
+      "properties": {
+        "kodas": { "$ref": "#/definitions/renginioKodas" },
+        "tipas": { "$ref": "#/definitions/renginioRusis" },
+        "pavadinimas": { "$ref": "#/definitions/tekstas" },
+        "data": { "$ref": "#/definitions/data" },
+        "trukme_minutemis": { "type": "integer", "minimum": 1, "maximum": 1440 },
+        "aprasymas": { "type": "string", "maxLength": 500 },
+        "organizatorius": { "$ref": "#/definitions/organizatorius" },
+        "vieta": { "$ref": "#/definitions/vieta" },
+        "akcijos": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/akcija" }
+        }
+      }
+    }
+  }
+}
