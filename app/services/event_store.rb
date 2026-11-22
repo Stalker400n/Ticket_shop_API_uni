@@ -59,7 +59,7 @@ class EventStore
       end
     end
 
-   def write(events)
+    def write(events)
       tmp = "#{FILE}.tmp"
       File.write(tmp, JSON.pretty_generate({ "bilietai" => events}))
       File.rename(tmp, FILE)
