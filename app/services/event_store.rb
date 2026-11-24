@@ -1,10 +1,15 @@
 class EventStore
-  FILE = Rails.root.join("db", "events.json")
   LOCK = Mutex.new
 
   class Duplicate < StandardError; end
 
   class << self
+    attr_writer :file
+
+    def file
+      @file ||= Rails.root.join("db", "events.json")
+    end
+
     def all
       LOCK.synchronize { read }
     end
@@ -13,7 +18,7 @@ class EventStore
       LOCK.synchronize{read.find { |e| e["kodas"] == id}  }
     end
 
-   def next_code
+    def next_code
       LOCK.synchronize do
         max = read.map {|e| e["kodas"][/\d+/].to_i}.max || 0
         return format("REN-%03d", max + 1)
@@ -52,17 +57,17 @@ class EventStore
     private
 
     def read
-      if File.exist?(FILE)
-        return JSON.parse(File.read(FILE)).fetch("bilietai", [])
+      if File.exist?(file)
+        return JSON.parse(File.read(file)).fetch("bilietai", [])
       else
         return []
       end
     end
 
     def write(events)
-      tmp = "#{FILE}.tmp"
+      tmp = "#{file}.tmp"
       File.write(tmp, JSON.pretty_generate({ "bilietai" => events}))
-      File.rename(tmp, FILE)
+      File.rename(tmp, file)
     end
 
   end
