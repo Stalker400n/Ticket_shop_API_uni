@@ -1,12 +1,35 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+require "tmpdir"
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors)
 
-    # Add more helper methods to be used by all tests here...
+    def use_temp_store(events = [])
+      EventsStore.file = File.join(Dir.mktmpdir, "events.json")
+      File.write(EventsStore.file, JSON.generate({"bilietai" => events}))
+    end
+
+    teardown {EventsStore.file = nil}
+
+    def valid_event(overrides = {})
+      {
+        "kodas" => "REN-001", "tipas" => "koncertas", "pavadinimas" => "Kauno džiazo vakaras",
+        "data" => "2026-11-20", "trukme_minutemis" => 120,
+        "organizatorius" => { "pavadinimas" => "Džiazo namai", "el_pastas" => "info@dziazonamai.lt" },
+        "vieta" => {
+          "pavadinimas" => "Žalgirio arena", "miestas" => "Kaunas", "talpa" => 15000,
+          "sektoriai" => [{
+            "kodas" => "A", "pavadinimas" => "Parteris",
+            "bilieto_kaina" => { "valiuta" => "EUR", "suma" => 65.0 },
+            "bilietai" => [
+              { "busena" => "parduotas", "eilute" => 1, "vietos_numeris" => 12, "pardavimo_data" => "2026-10-01" },
+              { "busena" => "laisvas", "eilute" => 2, "vietos_numeris" => 5 }
+            ]
+          }]
+        }
+      }.merge(overrides)
+    end
   end
 end
