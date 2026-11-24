@@ -1,24 +1,27 @@
-# README
+# Ticket Shop API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Backend service for a university web application lab, built to handle and validate the JSON data structure and schema created in previous labs.
 
-Things you may want to cover:
+Built using Ruby on Rails.
 
-* Ruby version
+## Setup
 
-* System dependencies
+Clone the repository, go into the directory, install dependencies:
 
-* Configuration
+```bash
+git clone https://github.com/Stalker400n/Ticket_shop_API_uni.git
+cd Ticket_shop_API_uni
+bundle install
+```
 
-* Database creation
+Launch the server:
 
-* Database initialization
+```bash
+rails server
+```
 
-* How to run the test suite
+## Notes
 
-* Services (job queues, cache servers, search engines, etc.)
+ - Storage: This project does not use a database. Everything is saved directly to a JSON file, as required by the lab assignment.
 
-* Deployment instructions
-
-* ...
+ - CORS: CORS is not configured yet, as the frontend has not been built.
