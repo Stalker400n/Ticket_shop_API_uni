@@ -7,11 +7,11 @@ module ActiveSupport
   class TestCase
 
     def use_temp_store(events = [])
-      EventsStore.file = File.join(Dir.mktmpdir, "events.json")
-      File.write(EventsStore.file, JSON.generate({"bilietai" => events}))
+      EventStore.file = File.join(Dir.mktmpdir, "events.json")
+      File.write(EventStore.file, {"bilietai" => events}.to_json)
     end
 
-    teardown {EventsStore.file = nil}
+    teardown {EventStore.file = nil}
 
     def valid_event(overrides = {})
       {
