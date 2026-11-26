@@ -4,7 +4,7 @@ Backend service for a university web application lab, built to handle and valida
 
 Built using Ruby on Rails.
 
-## Setup
+## How to run
 
 Clone the repository, go into the directory, install dependencies:
 
@@ -18,6 +18,22 @@ Launch the server:
 
 ```bash
 rails server
+```
+
+## Tests
+
+Current tests only cover the services in unit tests.
+
+Running the tests:
+
+```bash
+rails test
+```
+
+Individual services tests:
+
+```bash
+rails test test/services/Chosen_module_test.rb
 ```
 
 ## Notes
